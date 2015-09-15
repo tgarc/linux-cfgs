@@ -1,3 +1,6 @@
+defmonitor on           # enable activity monitoring by default
+activity ""             # disable the activity message
+
 altscreen on
 defbce "on"             # replace bg color with current color
 term screen-256color    # Enable 256 color term
@@ -13,10 +16,23 @@ title tdos
 bind R eval "source $HOME/.screenrc" "echo '.screenrc reloaded!'"
 bind f hardstatus alwaysignore
 bind F hardstatus alwayslastline
+bind . next
+bind , prev
 bind " " windowlist -b
+
+bindkey ^[[5;5~ eval "copy" "stuff ^U"
+bindkey ^[[6;5~ eval "copy" "stuff ^D"
+# bindkey -k k9 eval "copy" "stuff ^u"
+# bindkey -k k; eval "copy" "stuff ^d"
+# bindkey -m -k k9 stuff ^u
+# bindkey -m -k k; stuff ^d
+
+backtick 0 30 30 sh -c 'a=$(cat /sys/class/thermal/thermal_zone0/temp);b=$(cat /sys/class/thermal/thermal_zone1/temp);echo $(cat /sys/class/power_supply/BAT0/capacity)%/$(($a > $b ? $a/1000:$b/1000))C'
 
 termcapinfo xterm* ti@:te@
 attrcolor b ".I"
 
 hardstatus alwayslastline
-hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %m-%d %{W}%c %{g}]'
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %` %{g}|%{B} %m-%d %{W}%c %{g}]'
+
+caption splitonly '%{= kG}%{W}%n$ %t'

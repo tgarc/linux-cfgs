@@ -16,8 +16,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=5000
+HISTFILESIZE=-1 # don't truncate the hist file
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -75,7 +75,7 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto --block-size 1K'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
@@ -104,19 +104,18 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# disable XON to enable forward search
+stty -ixon
+
 TERM="xterm-256color"
 eval `dircolors /home/tdos/.dircolors`
 
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
-set show-all-if-ambiguous on
-set completion-ignore-case on
-
 export EDITOR="emacsclient"
 export SUDO_EDITOR="emacsclient -cnw"
+export PATH=${HOME}/.miniconda/bin:$PATH
 
 # set up ROS
-. /opt/ros/indigo/setup.bash
+#. /opt/ros/indigo/setup.bash
 
 cb() {
   local _scs_col="\e[0;32m"; local _wrn_col='\e[1;31m'; local _trn_col='\e[0;33m'
@@ -140,7 +139,7 @@ cb() {
       echo "       echo <string> | cb"
     else
       # Copy input to clipboard
-      echo -n "$input" | xclip -selection c
+      echo -n "$input" | xclip #-selection c
       # Truncate text for status
       if [ ${#input} -gt 80 ]; then input="$(echo $input | cut -c1-80)$_trn_col...\e[0m"; fi
       # Print status.
@@ -148,16 +147,4 @@ cb() {
     fi
   fi
 }
-
-# The next line updates PATH for the Google Cloud SDK.
-source '/media/storage/Dropbox/Academics/ee382v_advanced_programming_tools/google-cloud-sdk/path.bash.inc'
-
-# The next line enables bash completion for gcloud.
-source '/media/storage/Dropbox/Academics/ee382v_advanced_programming_tools/google-cloud-sdk/completion.bash.inc'
-
-PATH=$PATH:~/android-studio/sdk/tools:~/android-studio/bin
-
-
-
-
 
