@@ -1,3 +1,4 @@
+zombie qr
 defmonitor on           # enable activity monitoring by default
 activity ""             # disable the activity message
 

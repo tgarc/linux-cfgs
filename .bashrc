@@ -112,7 +112,7 @@ eval `dircolors /home/tdos/.dircolors`
 
 export EDITOR="emacsclient"
 export SUDO_EDITOR="emacsclient -cnw"
-export PATH=${HOME}/.miniconda/bin:$PATH
+# export PATH=${HOME}/.miniconda/bin:$PATH
 
 # set up ROS
 #. /opt/ros/indigo/setup.bash
