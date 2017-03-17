@@ -112,7 +112,6 @@ eval `dircolors /home/tdos/.dircolors`
 
 export EDITOR="emacsclient"
 export SUDO_EDITOR="emacsclient -cnw"
-# export PATH=${HOME}/.miniconda/bin:$PATH
 
 # set up ROS
 #. /opt/ros/indigo/setup.bash
@@ -148,3 +147,42 @@ cb() {
   fi
 }
 
+# functions to manipulate PATH
+pathremove () {
+    local IFS=':'
+    local NEWPATH
+    local DIR
+    local PATHVARIABLE=${2:-PATH}
+    for DIR in ${!PATHVARIABLE} ; do
+        if [ "$DIR" != "$1" ] ; then
+            NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+        fi
+    done
+    export $PATHVARIABLE="$NEWPATH"
+}
+
+pathprepend () {
+    pathremove $1 $2
+    local PATHVARIABLE=${2:-PATH}
+    export $PATHVARIABLE="$1${!PATHVARIABLE:+:${!PATHVARIABLE}}"
+}
+
+pathappend () {
+    pathremove $1 $2
+    local PATHVARIABLE=${2:-PATH}
+    export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
+}
+
+loadconda () { 
+    echo "Putting conda into path..."
+    pathprepend $HOME/.miniconda/bin 
+}
+
+unloadconda () { 
+    pathremove $HOME/.miniconda/bin 
+    echo "Removed conda from path."
+}
+
+bind Space:magic-space
+
+#export PATH=~/.local/bin:$PATH
